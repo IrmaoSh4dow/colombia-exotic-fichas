@@ -412,7 +412,6 @@
             <div class="form-group-modern"><label><i class="fas fa-heart"></i> Gustos y Aficiones</label><textarea id="gustosPj" rows="2" class="textarea-modern" placeholder="Hobbies, intereses..."></textarea></div>
             <div class="form-group-modern"><label><i class="fas fa-bullseye"></i> Objetivos</label><textarea id="objetivosPj" rows="2" class="textarea-modern" placeholder="Metas en el servidor..."></textarea></div>
             <div class="form-group-modern"><label><i class="fas fa-quote-right"></i> Frase representativa</label><input type="text" id="frasePj" class="input-modern" placeholder="'El valor no se negocia'"></div>
-            <div class="form-group-modern"><label><i class="fas fa-question"></i> Pregunta Final</label><input type="text" id="preguntaPj" class="input-modern" placeholder="¿Redención o venganza?"></div>
             <button id="btnDescargarPDF" class="btn-pdf"><i class="fas fa-file-pdf"></i> Guardar como PDF (Imprimir)</button>
         </div>
 
@@ -477,7 +476,6 @@
             gustos: document.getElementById('gustosPj'),
             objetivos: document.getElementById('objetivosPj'),
             frase: document.getElementById('frasePj'),
-            pregunta: document.getElementById('preguntaPj')
         };
         
         // Elementos del contador
@@ -535,8 +533,7 @@
             if(!objetivos) objetivos = "Metas desconocidas en la ciudad.";
             let frase = camposPj.frase ? camposPj.frase.value.trim() : ""; 
             if(!frase) frase = "—";
-            let pregunta = camposPj.pregunta ? camposPj.pregunta.value.trim() : ""; 
-            if(!pregunta) pregunta = "—";
+
             
             const fichaHTML = `
                 <div class="header-ficha">
@@ -577,10 +574,7 @@
                 
                 <div class="section-title-preview"><i class="fas fa-quote-left"></i> Frase Representativa</div>
                 <div style="background:#FBEEDB; display:inline-block; border-radius:40px; padding:4px 18px; font-style:italic;">“${escapeHtml(frase)}”</div>
-                
-                <div class="section-title-preview"><i class="fas fa-question-circle"></i> Pregunta Final</div>
-                <div class="preview-value" style="font-style:italic; background:#FEF3E0; padding:6px 12px; border-radius:20px;">${escapeHtml(pregunta)}</div>
-                    
+                 
                 <div style="margin-top:20px; font-size:0.6rem; text-align:center; border-top:1px solid #eadbbc; padding-top:12px;">Documento de rol — personaje único para Colombia Exotic RP</div>
             `;
             const contenedorFichaDinamica = document.getElementById('fichaDinamica');
