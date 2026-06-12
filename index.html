@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Colombia Exotic RP | Creador de Personajes</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Life+Savers:wght@400;700;800&family=Ole&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at 10% 20%, #0A1F2E, #05101A);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* INTRO OVERLAY (animación) */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #0F2C3B 0%, #020C14 100%);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1), visibility 0s linear 1.2s;
+            backdrop-filter: blur(2px);
+        }
+        .intro-content {
+            text-align: center;
+            animation: fadeInScale 0.8s ease-out;
+        }
+        .intro-logo {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 60px;
+            animation: floatLogo 1.2s ease-in-out;
+        }
+        @keyframes floatLogo {
+            0% { transform: scale(0.7) translateY(30px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .intro-title {
+            margin-top: 2rem;
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: "Google Sans Flex", sans-serif;
+            background: linear-gradient(135deg, #FCD116, #FFE484, #CE1126);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .intro-sub {
+            color: #b9d1e0;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        .intro-overlay.hide-intro {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        /* CONTENIDO PRINCIPAL (inicialmente oculto) */
+        .main-app {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.8s ease;
+            pointer-events: none;
+            padding: 2rem 1.8rem;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+        .main-app.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        
+        /* Header tricolor moderno */
+        .hero-modern {
+            background: rgba(10, 30, 40, 0.65);
+            backdrop-filter: blur(16px);
+            border-radius: 2.5rem;
+            padding: 0.7rem 2rem;
+            margin-bottom: 2.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid rgba(252, 209, 22, 0.35);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+        }
+        .logo-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo-header-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 25px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .logo-header-img:hover { transform: scale(1.02); }
+        .title-header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(120deg, #FCD116, #FFB347);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        
+        /* Grid con diseño mejorado */
+        .grid-creador {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        /* Formulario: estilo glass + elegancia - TEXTO BLANCO */
+        .formulario-glam {
+            background: rgba(12, 28, 38, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            border: 1px solid rgba(252, 209, 22, 0.3);
+            box-shadow: 0 30px 45px -15px black;
+            transition: all 0.2s;
+            height: 85vh;
+            overflow-y: auto;
+        }
+        .form-group-modern {
+            margin-bottom: 1.2rem;
+        }
+        .form-group-modern label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            color: #FFFFFF;
+            letter-spacing: 0.3px;
+        }
+        .form-group-modern label i {
+            color: #FCD116;
+            width: 22px;
+        }
+        .input-modern, .textarea-modern {
+            width: 100%;
+            background: #0C1E28;
+            border: 1.5px solid #2C5F73;
+            border-radius: 1.2rem;
+            padding: 12px 16px;
+            font-family: 'Plus Jakarta Sans', monospace;
+            font-size: 0.85rem;
+            color: #FFFFFF;
+            transition: 0.2s;
+            outline: none;
+        }
+        .input-modern::placeholder, .textarea-modern::placeholder {
+            color: #A0B8C5;
+            font-weight: 400;
+        }
+        .input-modern:focus, .textarea-modern:focus {
+            border-color: #FCD116;
+            box-shadow: 0 0 0 3px rgba(252, 209, 22, 0.25);
+            background: #0A1C26;
+        }
+        .textarea-modern {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        /* Contador de caracteres para historia */
+        .char-counter {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            font-size: 0.7rem;
+            color: #A0B8C5;
+        }
+        .char-counter span {
+            font-weight: 600;
+        }
+        .char-counter .remaining {
+            color: #FCD116;
+        }
+        .char-counter .warning {
+            color: #CE1126;
+        }
+        
+        /* Vista previa mejorada (ficha premium) */
+        .premium-preview {
+            background: #FFFCF5;
+            border-radius: 2rem;
+            box-shadow: 0 30px 40px -10px rgba(0,0,0,0.6);
+            height: 85vh;
+            overflow-y: auto;
+        }
+        .ficha-character {
+            background: white;
+            margin: 1.5rem;
+            border-radius: 1.8rem;
+            padding: 1.6rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #FCDDA8;
+        }
+        .header-ficha {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #FCD116;
+            padding-bottom: 0.7rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+        .logo-preview-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-preview-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 18px;
+            background: #ece0c7;
+            object-fit: cover;
+        }
+        .section-title-preview {
+            font-weight: 800;
+            font-size: 1rem;
+            margin: 1.2rem 0 0.6rem 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 4px solid #CE1126;
+            padding-left: 12px;
+            color: #2A3B2C;
+        }
+        .preview-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 0.6rem;
+        }
+        .preview-label {
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: #CE1126;
+            text-transform: uppercase;
+            min-width: 110px;
+        }
+        .preview-value {
+            font-size: 0.85rem;
+            color: #1c2e3a;
+            flex: 1;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        .btn-pdf {
+            background: linear-gradient(95deg, #FCD116, #E5A012);
+            border: none;
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 14px;
+            border-radius: 50px;
+            width: 100%;
+            color: #0C1E28;
+            margin-top: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+        }
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(95deg, #FFDF6C, #F5B83D);
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #122b36; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #FCD116; border-radius: 10px; }
+        @media (max-width: 900px) {
+            .grid-creador { grid-template-columns: 1fr; gap: 1.5rem; }
+            .formulario-glam, .premium-preview { height: auto; max-height: 70vh; }
+            .main-app { padding: 1rem; }
+        }
+        
+        /* ESTILOS PARA IMPRESIÓN - Elimina encabezados, pies y márgenes */
+        @media print {
+            @page {
+                margin: 0.5cm;
+                size: portrait;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+            .formulario-glam, .hero-modern, .btn-pdf, .intro-overlay, .flag-badge {
+                display: none !important;
+            }
+            .main-app {
+                padding: 0 !important;
+                margin: 0 !important;
+                opacity: 1 !important;
+                transform: none !important;
+                pointer-events: auto !important;
+                position: static !important;
+            }
+            .premium-preview {
+                box-shadow: none !important;
+                height: auto !important;
+                background: white !important;
+                position: static !important;
+                overflow: visible !important;
+            }
+            .ficha-character {
+                margin: 0 auto !important;
+                padding: 20px !important;
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                max-width: 100% !important;
+                page-break-inside: avoid;
+            }
+            .preview-value {
+                color: black !important;
+            }
+            .section-title-preview, .preview-row, .header-ficha {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- INTRO ANIMADA -->
+<div id="introOverlay" class="intro-overlay">
+    <div class="intro-content">
+        <img id="introLogoImg" class="intro-logo" src="logo.png" alt="Logo Colombia Exotic RP">
+        <div class="intro-title">COLOMBIA EXOTIC RP</div>
+        <div class="intro-sub">Forja tu destino · Ficha de personaje</div>
+    </div>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div id="mainApp" class="main-app">
+    <div class="hero-modern">
+        <div class="logo-header">
+            <img id="headerLogo" class="logo-header-img" src="logo.png" alt="Logo Servidor">
+            <div class="title-header">
+                <h1><i class="fas fa-crown"></i> Colombia Exotic RP</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-creador">
+        <!-- Formulario estilizado - SIN CAMPO DE FOTO -->
+        <div class="formulario-glam">
+            <h3 style="margin-bottom: 1.2rem; display: flex; gap: 8px; color: #FFFFFF;"><i class="fas fa-mask"></i> Datos del personaje</h3>
+            <div class="form-group-modern"><label><i class="fas fa-user-astronaut"></i> Nombre completo</label><input type="text" id="nombrePj" class="input-modern" placeholder="Ej: Valeria S. Córdoba" autocomplete="off"></div>
+            <div style="display: flex; gap: 12px;">
+                <div class="form-group-modern" style="flex:1"><label><i class="fas fa-calendar"></i> Fecha nac.</label><input type="date" id="fechaNacPj" class="input-modern"></div>
+                <div class="form-group-modern" style="flex:1"><label><i class="fas fa-hourglass"></i> Edad</label><input type="number" id="edadPj" class="input-modern" placeholder="Años" min="0" max="99"></div>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <div class="form-group-modern" style="flex:1"><label><i class="fas fa-globe"></i> Nacionalidad</label><input type="text" id="nacionalidadPj" class="input-modern" placeholder="Colombiana, etc."></div>
+                <div class="form-group-modern" style="flex:1"><label><i class="fas fa-city"></i> Lugar nac.</label><input type="text" id="lugarNacPj" class="input-modern" placeholder="Medellín, Bogotá..."></div>
+            </div>
+            <div class="form-group-modern"><label><i class="fas fa-briefcase"></i> Ocupación</label><input type="text" id="ocupacionPj" class="input-modern" placeholder="Comerciante, Piloto, Criminal..."></div>
+            <div class="form-group-modern"><label><i class="fas fa-ruler"></i> Altura</label><input type="text" id="alturaPj" class="input-modern" placeholder="1.78 m"></div>
+            <div class="form-group-modern"><label><i class="fas fa-hand-fist"></i> Complexión</label><input type="text" id="complexionPj" class="input-modern" placeholder="Atlética, delgada..."></div>
+            <div class="form-group-modern"><label><i class="fas fa-palette"></i> Descripción física</label><textarea id="descFisicaPj" rows="2" class="textarea-modern" placeholder="Rasgos, tatuajes, estilo..."></textarea></div>
+            
+            <!-- Campo Historia con límite de 2200 caracteres y contador -->
+            <div class="form-group-modern">
+                <label><i class="fas fa-book"></i> Historia (vida, infancia, llegada) <span style="font-size:0.7rem; color:#FCD116;">• Máx. 2400 caracteres</span></label>
+                <textarea id="historiaPj" rows="3" class="textarea-modern" placeholder="Relato completo del personaje..." maxlength="2400"></textarea>
+                <div class="char-counter">
+                    <i class="fas fa-keyboard"></i>
+                    <span>Caracteres:</span>
+                    <span id="historiaContador" class="remaining">0</span>
+                    <span>/ 2400</span>
+                </div>
+            </div>
+            
+            <div class="form-group-modern"><label><i class="fas fa-brain"></i> Perfil Psicológico</label><textarea id="psicologicoPj" rows="2" class="textarea-modern" placeholder="Personalidad, defectos, motivaciones..."></textarea></div>
+            <div class="form-group-modern"><label><i class="fas fa-heart"></i> Gustos y Aficiones</label><textarea id="gustosPj" rows="2" class="textarea-modern" placeholder="Hobbies, intereses..."></textarea></div>
+            <div class="form-group-modern"><label><i class="fas fa-bullseye"></i> Objetivos</label><textarea id="objetivosPj" rows="2" class="textarea-modern" placeholder="Metas en el servidor..."></textarea></div>
+            <div class="form-group-modern"><label><i class="fas fa-quote-right"></i> Frase representativa</label><input type="text" id="frasePj" class="input-modern" placeholder="'El valor no se negocia'"></div>
+            <div class="form-group-modern"><label><i class="fas fa-question"></i> Pregunta Final</label><input type="text" id="preguntaPj" class="input-modern" placeholder="¿Redención o venganza?"></div>
+            <button id="btnDescargarPDF" class="btn-pdf"><i class="fas fa-file-pdf"></i> Guardar como PDF (Imprimir)</button>
+        </div>
+
+        <!-- Vista previa Premium - SIN FOTO DEL PERSONAJE -->
+        <div class="premium-preview" id="previewArea">
+            <div id="contenedorFicha">
+                <div class="ficha-character" id="fichaDinamica">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---- ANIMACIÓN INTRO + mostrar app
+        const introDiv = document.getElementById('introOverlay');
+        const mainApp = document.getElementById('mainApp');
+        
+        setTimeout(() => {
+            if(introDiv) introDiv.classList.add('hide-intro');
+            if(mainApp) mainApp.classList.add('visible');
+        }, 2500);
+        
+        // --- Variables y manejo de logo personalizable
+        let serverLogoURL = "logo.png"; 
+        const headerLogoImg = document.getElementById('headerLogo');
+        const introLogoImg = document.getElementById('introLogoImg');
+        
+        function actualizarTodosLosLogos(url) {
+            serverLogoURL = url;
+            if(headerLogoImg) headerLogoImg.src = url;
+            if(introLogoImg) introLogoImg.src = url;
+            actualizarPreviewCompleta();
+        }
+        
+        if(headerLogoImg) {
+            headerLogoImg.addEventListener('click', () => {
+                let nuevaURL = prompt("Ingresa la URL de tu logo PNG (o escribe 'logo.png' para el archivo local)", serverLogoURL);
+                if(nuevaURL && nuevaURL.trim() !== "") {
+                    actualizarTodosLosLogos(nuevaURL.trim());
+                }
+            });
+            headerLogoImg.style.cursor = "pointer";
+            headerLogoImg.title = "Haz clic para cambiar el logo del servidor (por defecto logo.png)";
+        }
+        
+        // Obtener campos
+        const camposPj = {
+            nombre: document.getElementById('nombrePj'),
+            fechaNac: document.getElementById('fechaNacPj'),
+            edad: document.getElementById('edadPj'),
+            nacionalidad: document.getElementById('nacionalidadPj'),
+            lugarNac: document.getElementById('lugarNacPj'),
+            ocupacion: document.getElementById('ocupacionPj'),
+            altura: document.getElementById('alturaPj'),
+            complexion: document.getElementById('complexionPj'),
+            descFisica: document.getElementById('descFisicaPj'),
+            historia: document.getElementById('historiaPj'),
+            psicologico: document.getElementById('psicologicoPj'),
+            gustos: document.getElementById('gustosPj'),
+            objetivos: document.getElementById('objetivosPj'),
+            frase: document.getElementById('frasePj'),
+            pregunta: document.getElementById('preguntaPj')
+        };
+        
+        // Elementos del contador
+        const historiaTextarea = document.getElementById('historiaPj');
+        const historiaContador = document.getElementById('historiaContador');
+        const LIMITE_HISTORIA = 2400;
+        
+        // Función para actualizar el contador de caracteres de historia
+        function actualizarContadorHistoria() {
+            if(historiaTextarea && historiaContador) {
+                const longitud = historiaTextarea.value.length;
+                const restantes = LIMITE_HISTORIA - longitud;
+                historiaContador.textContent = longitud;
+                
+                // Cambiar color si está cerca del límite
+                if(restantes <= 100) {
+                    historiaContador.className = 'warning';
+                } else {
+                    historiaContador.className = 'remaining';
+                }
+            }
+        }
+        
+        // Limitar manualmente por si el usuario pega texto más largo
+        function limitarHistoria() {
+            if(historiaTextarea && historiaTextarea.value.length > LIMITE_HISTORIA) {
+                historiaTextarea.value = historiaTextarea.value.substring(0, LIMITE_HISTORIA);
+                actualizarContadorHistoria();
+            }
+        }
+        
+        function escapeHtml(str) { 
+            if(!str) return ""; 
+            return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); 
+        }
+        
+        function actualizarPreviewCompleta() {
+            const nombre = camposPj.nombre ? camposPj.nombre.value.trim() : "Sin nombre";
+            const fechaNac = camposPj.fechaNac ? camposPj.fechaNac.value : "—";
+            const edad = camposPj.edad ? camposPj.edad.value : "?";
+            const nacionalidad = camposPj.nacionalidad ? camposPj.nacionalidad.value.trim() : "No especificada";
+            const lugarNac = camposPj.lugarNac ? camposPj.lugarNac.value.trim() : "Desconocido";
+            const ocupacion = camposPj.ocupacion ? camposPj.ocupacion.value.trim() : "Indefinida";
+            const altura = camposPj.altura ? camposPj.altura.value.trim() : "—";
+            const complexion = camposPj.complexion ? camposPj.complexion.value.trim() : "—";
+            let descFisica = camposPj.descFisica ? camposPj.descFisica.value.trim() : ""; 
+            if(!descFisica) descFisica = "Sin descripción física.";
+            let historia = camposPj.historia ? camposPj.historia.value.trim() : ""; 
+            if(!historia) historia = "El personaje aún no tiene una historia forjada.";
+            let psicologico = camposPj.psicologico ? camposPj.psicologico.value.trim() : ""; 
+            if(!psicologico) psicologico = "Personalidad en construcción.";
+            let gustos = camposPj.gustos ? camposPj.gustos.value.trim() : ""; 
+            if(!gustos) gustos = "Aficiones por revelar.";
+            let objetivos = camposPj.objetivos ? camposPj.objetivos.value.trim() : ""; 
+            if(!objetivos) objetivos = "Metas desconocidas en la ciudad.";
+            let frase = camposPj.frase ? camposPj.frase.value.trim() : ""; 
+            if(!frase) frase = "—";
+            let pregunta = camposPj.pregunta ? camposPj.pregunta.value.trim() : ""; 
+            if(!pregunta) pregunta = "—";
+            
+            const fichaHTML = `
+                <div class="header-ficha">
+                    <div class="logo-preview-mini">
+                        <img class="logo-preview-img" id="miniPreviewLogo" src="${escapeHtml(serverLogoURL)}" onerror="this.src='logo.png'">
+                        <span style="font-weight:800;">Colombia Exotic RP</span>
+                    </div>
+                    <span style="font-size:0.7rem; background:#FCD11620; padding:4px 12px; border-radius:40px;"><i class="fas fa-id-card"></i> Ficha oficial</span>
+                </div>
+                
+                <div style="display: flex; flex-wrap:wrap; gap: 0.5rem;">
+                    <div style="flex: 1;">
+                        <div class="preview-row"><div class="preview-label"><i class="fas fa-user"></i> Nombre</div><div class="preview-value">${escapeHtml(nombre)}</div></div>
+                        <div class="preview-row"><div class="preview-label"><i class="fas fa-calendar"></i> Nacimiento</div><div class="preview-value">${escapeHtml(fechaNac)}</div></div>
+                        <div class="preview-row"><div class="preview-label">Edad</div><div class="preview-value">${escapeHtml(edad)} años</div></div>
+                        <div class="preview-row"><div class="preview-label">Nacionalidad</div><div class="preview-value">${escapeHtml(nacionalidad)}</div></div>
+                        <div class="preview-row"><div class="preview-label">Lugar nac.</div><div class="preview-value">${escapeHtml(lugarNac)}</div></div>
+                        <div class="preview-row"><div class="preview-label">Ocupación</div><div class="preview-value">${escapeHtml(ocupacion)}</div></div>
+                    </div>
+                </div>
+                
+                <div class="section-title-preview"><i class="fas fa-ruler-combined"></i> Apariencia física</div>
+                <div class="preview-row"><div class="preview-label">Altura</div><div class="preview-value">${escapeHtml(altura)}</div></div>
+                <div class="preview-row"><div class="preview-label">Complexión</div><div class="preview-value">${escapeHtml(complexion)}</div></div>
+                <div class="preview-row"><div class="preview-label">Descripción</div><div class="preview-value">${escapeHtml(descFisica).replace(/\n/g, '<br>')}</div></div>
+                
+                <div class="section-title-preview"><i class="fas fa-book-open"></i> Historia</div>
+                <div class="preview-value" style="background:#FEF3E0; padding:8px 12px; border-radius:20px; white-space:pre-wrap;">${escapeHtml(historia).replace(/\n/g, '<br>')}</div>
+                
+                <div class="section-title-preview"><i class="fas fa-brain"></i> Perfil Psicológico</div>
+                <div class="preview-value" style="background:#FEF3E0; padding:8px 12px; border-radius:20px; white-space:pre-wrap;">${escapeHtml(psicologico).replace(/\n/g, '<br>')}</div>
+                
+                <div class="section-title-preview"><i class="fas fa-heart"></i> Gustos y Aficiones</div>
+                <div class="preview-value" style="white-space:pre-wrap;">${escapeHtml(gustos).replace(/\n/g, '<br>')}</div>
+                
+                <div class="section-title-preview"><i class="fas fa-bullseye"></i> Objetivos</div>
+                <div class="preview-value" style="white-space:pre-wrap;">${escapeHtml(objetivos).replace(/\n/g, '<br>')}</div>
+                
+                <div class="section-title-preview"><i class="fas fa-quote-left"></i> Frase Representativa</div>
+                <div style="background:#FBEEDB; display:inline-block; border-radius:40px; padding:4px 18px; font-style:italic;">“${escapeHtml(frase)}”</div>
+                
+                <div class="section-title-preview"><i class="fas fa-question-circle"></i> Pregunta Final</div>
+                <div class="preview-value" style="font-style:italic; background:#FEF3E0; padding:6px 12px; border-radius:20px;">${escapeHtml(pregunta)}</div>
+                    
+                <div style="margin-top:20px; font-size:0.6rem; text-align:center; border-top:1px solid #eadbbc; padding-top:12px;">Documento de rol — personaje único para Colombia Exotic RP</div>
+            `;
+            const contenedorFichaDinamica = document.getElementById('fichaDinamica');
+            if(contenedorFichaDinamica) contenedorFichaDinamica.innerHTML = fichaHTML;
+            const miniPreviewLogo = document.getElementById('miniPreviewLogo');
+            if(miniPreviewLogo) miniPreviewLogo.src = serverLogoURL;
+        }
+        
+        // Eventos en tiempo real
+        if(camposPj.nombre) {
+            Object.values(camposPj).forEach(campo => {
+                if(campo) campo.addEventListener('input', () => {
+                    if(campo === historiaTextarea) {
+                        limitarHistoria();
+                        actualizarContadorHistoria();
+                    }
+                    actualizarPreviewCompleta();
+                });
+            });
+        }
+        
+        // Evento específico para el textarea de historia (pegar texto)
+        if(historiaTextarea) {
+            historiaTextarea.addEventListener('paste', function(e) {
+                setTimeout(() => {
+                    limitarHistoria();
+                    actualizarContadorHistoria();
+                    actualizarPreviewCompleta();
+                }, 10);
+            });
+            // Inicializar contador
+            actualizarContadorHistoria();
+        }
+        
+        // Función para guardar como PDF usando la funcionalidad nativa de impresión
+        function exportarPDF() {
+            const btn = document.getElementById('btnDescargarPDF');
+            if(!btn) return;
+            
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Preparando PDF...';
+            btn.disabled = true;
+            
+            try {
+                // Forzar actualización final de la vista previa
+                actualizarPreviewCompleta();
+                
+                // Pequeño delay para asegurar que el DOM se actualice
+                setTimeout(() => {
+                    // Guardar el título original
+                    const originalTitle = document.title;
+                    const nombrePersonaje = (camposPj.nombre && camposPj.nombre.value.trim()) ? camposPj.nombre.value.trim().replace(/\s/g, '_') : 'personaje';
+                    document.title = `Ficha_${nombrePersonaje}_CE_RP`;
+                    
+                    // Abrir diálogo de impresión (Guardar como PDF)
+                    window.print();
+                    
+                    // Restaurar título después de un momento
+                    setTimeout(() => {
+                        document.title = originalTitle;
+                    }, 500);
+                    
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }, 150);
+            } catch(e) {
+                console.error("Error:", e);
+                alert("Error al preparar el PDF: " + (e.message || "Intenta de nuevo"));
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+        
+        const pdfBtn = document.getElementById('btnDescargarPDF');
+        if(pdfBtn) pdfBtn.addEventListener('click', exportarPDF);
+        
+        // Inicializar
+        actualizarPreviewCompleta();
+    })();
+</script>
+</body>
+</html>
